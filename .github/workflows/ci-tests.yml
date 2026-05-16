@@ -20,8 +20,9 @@ jobs:
         with:
           php-version: '8.3'
 
-      - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+      # YAHAN CHANGE KIYA GAYA HAI - 'install' ki jagah 'update' hai
+      - name: Update Composer Dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Prepare Laravel Environment
         run: |
