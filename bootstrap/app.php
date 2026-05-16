@@ -21,8 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
             '2fa' => Ensure2FAVerified::class,
         ]);
 
-        //  Global Security Headers (VERY GOOD PRACTICE)
+        //  Global Security Headers
         $middleware->append(SecurityHeaders::class);
+
+        //  YE WAALI LINE HUMNE ADD KI HAI (Reverse Proxy Setup)
+        $middleware->trustProxies(at: '*');
 
         //  Redirect guest (not logged in)
         $middleware->redirectGuestsTo(function () {

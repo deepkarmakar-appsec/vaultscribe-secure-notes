@@ -55,8 +55,7 @@ class SecurityHeaders
 
         $response->headers->set('Content-Security-Policy', preg_replace('/\s+/', ' ', trim($csp)));
 
-     
-        if (app()->environment('production') && $request->isSecure()) {
+        if (app()->environment('production')) {
             $response->headers->set(
                 'Strict-Transport-Security',
                 'max-age=31536000; includeSubDomains; preload'
