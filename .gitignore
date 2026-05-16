@@ -2,7 +2,7 @@
 .env
 .env.backup
 .env.production
-
+scan.ps1
 # Composer
 /vendor
 
