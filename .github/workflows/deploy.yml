@@ -12,23 +12,26 @@ jobs:
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
+
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 2222
+
           script: |
             cd /opt/vaultscribe/vaultscribe-secure-notes
 
-            # Always force sync (important)
+            # Force sync latest code
             git fetch origin
             git reset --hard origin/main
 
-            # Install deps
-            composer install --no-interaction --prefer-dist --no-dev
+            # Install dependencies inside container
+            docker exec vaultscribe composer install --no-interaction --prefer-dist --no-dev
 
-            # Laravel optimize
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            # Laravel commands inside container
+            docker exec vaultscribe php artisan migrate --force
+
+            docker exec vaultscribe php artisan config:cache
+
+            docker exec vaultscribe php artisan route:cache
