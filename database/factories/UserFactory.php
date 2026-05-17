@@ -29,9 +29,10 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
-            'two_factor_confirmed_at' => null,
+            
+            // Jetstream columns hata kar aapke custom columns add kar diye hain:
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
         ];
     }
 
@@ -46,14 +47,15 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model has two-factor authentication configured.
+     * Indicate that the model has custom two-factor authentication configured.
      */
     public function withTwoFactor(): static
     {
         return $this->state(fn (array $attributes) => [
-            'two_factor_secret' => encrypt('secret'),
-            'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1'])),
-            'two_factor_confirmed_at' => now(),
+            // Agar aap database mein secret ko encrypt karke store kar rahe ho, 
+            // toh yahan encrypt('secret_key') ka use kar sakte hain.
+            'google2fa_secret' => 'B3JXG5A8NYM4K5QZ', // Standard base32 mock secret
+            'google2fa_enabled' => true,
         ]);
     }
 }

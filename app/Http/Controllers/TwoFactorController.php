@@ -16,7 +16,7 @@ class TwoFactorController extends Controller
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->route('log');
+            return redirect()->route('login');
         }
 
         if ($user->google2fa_enabled) {
@@ -52,7 +52,7 @@ class TwoFactorController extends Controller
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->route('log');
+            return redirect()->route('login');
         }
 
         $secret = session('2fa_secret');
@@ -70,7 +70,7 @@ class TwoFactorController extends Controller
 
         // Save in DB (encrypted)
         $user->update([
-            'google2fa_secret' => Crypt::encrypt($secret),
+            'google2fa_secret' => $secret,
             'google2fa_enabled' => true
         ]);
 
@@ -85,7 +85,7 @@ class TwoFactorController extends Controller
     public function challenge()
     {
         if (!session()->has('2fa_user_id')) {
-            return redirect()->route('log');
+            return redirect()->route('login');
         }
 
         return view('2fa-challenge');
@@ -101,13 +101,13 @@ class TwoFactorController extends Controller
         $userId = session('2fa_user_id');
 
         if (!$userId) {
-            return redirect()->route('log');
+            return redirect()->route('login');
         }
 
         $user = User::find($userId);
 
         if (!$user || !$user->google2fa_secret) {
-            return redirect()->route('log');
+            return redirect()->route('login');
         }
 
         $secret = Crypt::decrypt($user->google2fa_secret);

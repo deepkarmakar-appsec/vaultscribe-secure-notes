@@ -25,7 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SecurityHeaders::class);
 
         //  YE WAALI LINE HUMNE ADD KI HAI (Reverse Proxy Setup)
-        $middleware->trustProxies(at: '*');
+        // $middleware->trustProxies(at: '*');
 
         //  Redirect guest (not logged in)
         $middleware->redirectGuestsTo(function () {

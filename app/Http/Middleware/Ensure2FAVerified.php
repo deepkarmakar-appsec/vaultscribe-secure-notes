@@ -12,7 +12,7 @@ class Ensure2FAVerified
     public function handle(Request $request, Closure $next): Response
     {
         //  Allow only valid states
-        if (!Auth::check() && !session()->has('2fa_user_id')) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 

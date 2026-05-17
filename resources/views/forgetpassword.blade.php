@@ -32,7 +32,6 @@
             <a href="{{ route('login') }}">Back to Login</a>
         </div>
 </div>
-</div>
 
 </body>
 </html>

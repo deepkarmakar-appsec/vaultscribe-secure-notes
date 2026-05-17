@@ -12,7 +12,7 @@ class OtpController extends Controller
     public function otp()
     {
         if (!session('pending_user')) {
-            return redirect()->route('log')
+            return redirect()->route('login')
                 ->withErrors(['error' => 'invalid credentials']);
         }
 
@@ -49,7 +49,7 @@ class OtpController extends Controller
         $userData = session('pending_user');
 
         if (!$userData) {
-            return redirect()->route('log')
+            return redirect()->route('login')
                 ->withErrors(['error' => 'Session expired']);
         }
 

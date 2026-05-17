@@ -3,14 +3,23 @@
 use App\Models\User;
 
 test('guests are redirected to the login page', function () {
-    $response = $this->get(route('dashboard'));
-    $response->assertRedirect(route('login'));
+
+    $response = $this->get('/dashboard');
+
+    $response->assertRedirect('/login');
+
 });
 
 test('authenticated users can visit the dashboard', function () {
+
     $user = User::factory()->create();
+
     $this->actingAs($user);
 
-    $response = $this->get(route('dashboard'));
+    session(['2fa_passed' => true]);
+
+    $response = $this->get('/dashboard');
+
     $response->assertOk();
+
 });

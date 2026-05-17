@@ -33,8 +33,7 @@
             </a>
 
               {{-- 2FA Section --}}
-    @if(auth()->user()->google2fa_enabled)
-
+              @if(auth()->check() && auth()->user()->google2fa_enabled)
         <div class="menu-item" style="color: #22c55e;">
             <i class="fa-solid fa-shield-check"></i> 2FA Enabled
         </div>
@@ -61,7 +60,7 @@
             <img src="https://i.pravatar.cc/150?img=3" class="avatar" alt="User Avatar">
 
             <div class="user-info">
-                <h4>{{auth()->user()->name}}</h4>
+                <h4>{{ auth()->user()?->name }}</h4>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="logout-link">Logout</button>

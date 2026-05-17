@@ -14,7 +14,7 @@ use App\Models\ActivityLog;
 //   PUBLIC ROUTES 
 
 
-Route::get('/', fn() => view('login'))->name('home');
+Route::redirect('/', '/login')->name('home');
 
 Route::get('login', [AuthController::class, 'log'])->name('login');
 Route::post('login', [AuthController::class, 'logstore'])->middleware('throttle:5,1');
