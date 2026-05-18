@@ -569,7 +569,7 @@ docker compose up -d --build
 ### 🛡️ WAF Blocking Path Traversal (/etc/passwd)
 
 
-![WAF 403](YAHAN_IMAGE_LINK)
+![WAF 403](<img width="1904" height="1072" alt="attack block" src="https://github.com/user-attachments/assets/e631b6b1-5533-4a68-80e4-fab8108b2894" />)
 
 
 
