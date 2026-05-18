@@ -509,7 +509,7 @@ Make sure the following are installed:
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/vaultscribe.git
+https://github.com/deepkarmakar-appsec/vaultscribe-secure-notes.git
 
 # Enter project directory
 cd vaultscribe
