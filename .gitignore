@@ -13,7 +13,7 @@
 /public/build
 /public/hot
 /public/storage
-
+!storage/app/weak_passwords.txt
 # Storage keys
 /storage/*.key
 /storage/pail
