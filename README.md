@@ -1,3 +1,4 @@
+
 # 🔐 VaultScribe — Security-Focused Secure Notes Platform
 
 > A production-style Laravel application focused on Application Security, Authentication Hardening, Runtime Monitoring, Infrastructure Security, and DevSecOps automation.
@@ -568,44 +569,27 @@ docker compose up -d --build
 
 ### 🛡️ WAF Blocking Path Traversal (/etc/passwd)
 
-
-![WAF 403](https://github.com/user-attachments/assets/e631b6b1-5533-4a68-80e4-fab8108b2894)
-
-
+<img width="1904" height="1072" alt="WAF Blocking Path Traversal" src="https://github.com/user-attachments/assets/e631b6b1-5533-4a68-80e4-fab8108b2894" />
 
 ### 🚨 Grafana Live Attack Feed
 
-
-![Grafana Attack](YAHAN_IMAGE_LINK)
-
-
+<img width="1916" height="1070" alt="Grafana Live Attack Feed" src="https://github.com/user-attachments/assets/16f957fd-7af3-4730-a7d8-d3923694f84c" />
 
 ### 📧 Real-Time WAF Email Alert (XSS Blocked)
 
-
-![Email Alert](YAHAN_IMAGE_LINK)
-
-
+<img width="1080" height="2082" alt="Real-Time WAF Email Alert" src="https://github.com/user-attachments/assets/8ec1ebf1-ee4d-4da5-8312-33f64c15d6a2" />
 
 ### 🔐 Google Authenticator 2FA Setup
 
-
-![2FA Setup](YAHAN_IMAGE_LINK)
-
-
+<img width="1857" height="913" alt="Google Authenticator 2FA Setup" src="https://github.com/user-attachments/assets/633e32bb-e013-49bb-91b4-31e170704b60" />
 
 ### 📝 Notes Dashboard
 
-
-![Dashboard](YAHAN_IMAGE_LINK)
-
-
+<img width="1902" height="905" alt="Notes Dashboard" src="https://github.com/user-attachments/assets/0505178a-da73-4bae-9f56-e00348ddf619" />
 
 ### ⚙️ CI/CD Pipeline (805+ Runs)
 
-
-![GitHub Actions](YAHAN_IMAGE_LINK)
-
+<img width="1763" height="1992" alt="CI/CD Pipeline" src="https://github.com/user-attachments/assets/ac6d5bcc-e219-4587-9e40-d1edf483e5e3" />
 ---
 
 # 🤝 Contributing
