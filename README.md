@@ -509,10 +509,10 @@ Make sure the following are installed:
 
 ```bash
 # Clone repository
-https://github.com/deepkarmakar-appsec/vaultscribe-secure-notes.git
+git clone https://github.com/deepkarmakar-appsec/vaultscribe-secure-notes.git
 
 # Enter project directory
-cd vaultscribe
+cd vaultscribe-secure-notes
 
 # Install dependencies
 composer install
@@ -526,11 +526,8 @@ php artisan key:generate
 # Run database migrations
 php artisan migrate
 
-# Install frontend dependencies
-npm install
 
-# Build frontend assets
-npm run build
+
 ```
 
 ---
