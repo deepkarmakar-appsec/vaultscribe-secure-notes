@@ -562,19 +562,50 @@ docker compose up -d --build
 8. Monitoring & runtime analysis
 
 ---
+**Isko replace karna hai yeh se:**
 
+```markdown
 # 📸 Screenshots
 
-```md
-Add screenshots here:
+### 🛡️ WAF Blocking Path Traversal (/etc/passwd)
 
-- Login Page
-- Dashboard
-- Grafana Monitoring
-- Attack Monitoring
-- Falco Alerts
-- Notes Management
-```
+
+![WAF 403](YAHAN_IMAGE_LINK)
+
+
+
+### 🚨 Grafana Live Attack Feed
+
+
+![Grafana Attack](YAHAN_IMAGE_LINK)
+
+
+
+### 📧 Real-Time WAF Email Alert (XSS Blocked)
+
+
+![Email Alert](YAHAN_IMAGE_LINK)
+
+
+
+### 🔐 Google Authenticator 2FA Setup
+
+
+![2FA Setup](YAHAN_IMAGE_LINK)
+
+
+
+### 📝 Notes Dashboard
+
+
+![Dashboard](YAHAN_IMAGE_LINK)
+
+
+
+### ⚙️ CI/CD Pipeline (805+ Runs)
+
+
+![GitHub Actions](YAHAN_IMAGE_LINK)
 
 ---
 
