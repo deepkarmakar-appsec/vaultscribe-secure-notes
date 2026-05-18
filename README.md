@@ -1,259 +1,608 @@
-```bash
-    docker compose up -d --build
-    Aapke project **VaultScribe** ki saari details ko summarize aur organize karke maine ek production-grade, highly professional **README.md** file taiyar kar di hai. Isme proper headings, clean badges, tables, aur code blocks ka use kiya gaya hai taaki aapka GitHub repository ekdum top-notch dikhe.
-
-Aap niche diye gaye pure block ko copy karke apni `README.md` file mein paste kar sakte hain:
-```markdown
 # 🔐 VaultScribe — Security-Focused Secure Notes Platform
 
-[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
-[![PHP Version](https://img.shields.io/badge/PHP-8.3-777BB4?style=for-the-badge&logo=php)](https://php.net)
-[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-
-VaultScribe ek production-style Laravel application hai jo basic CRUD functionalities se hatkar **Application Security, Authentication Hardening, Runtime Monitoring, Infrastructure Security, aur DevSecOps automation** par focus karti hai. Ise internet par hostile traffic aur automated exploit vectors ke khilaf defensive engineering ko test aur implement karne ke liye design kiya gaya hai.
-
-🌐 **Live Demo:** [https://vaultscribe.in](https://vaultscribe.in)
+> A production-style Laravel application focused on Application Security, Authentication Hardening, Runtime Monitoring, Infrastructure Security, and DevSecOps automation.
 
 ---
 
-## 🏗️ Infrastructure & Security Architecture
+## 🌐 Live Demo
 
-VaultScribe **Defense-in-Depth** security model ko follow karta hai jahan request edge se lekar application runtime aur container level tak multiple security layers se guzarti hai:
+🌍 [https://vaultscribe.in](https://vaultscribe.in)
+
+---
+
+# 📌 Overview
+
+VaultScribe is a security-focused secure notes platform built using PHP and Laravel with emphasis on real-world defensive security engineering rather than basic CRUD functionality.
+
+The project explores how modern applications can implement:
+
+* Secure authentication flows
+* Multi-layer account protection
+* Sensitive data encryption
+* Runtime security monitoring
+* Centralized logging & observability
+* Web application firewall protections
+* Infrastructure hardening
+* Containerized deployments
+* DevSecOps automation pipelines
+
+Instead of treating deployment as the final step, VaultScribe focuses on what happens **after deployment** — monitoring attacks, reducing attack surfaces, detecting suspicious activity, and improving operational visibility.
+
+---
+
+# 🏗️ Infrastructure & Security Architecture
 
 ```text
-┌─────────────────────────────────────────────────────────┐
-│                       Web Browser                       │
-└────────────────────────────┬────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│                     Cloudflare Edge                     │
-│               (DDoS Protection / SSL WAF)               │
-└────────────────────────────┬────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│                      Nginx Server                       │
-│             (ModSecurity WAF + OWASP CRS)               │
-└────────────────────────────┬────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│                 Isolated Docker Stack                   │
-├─────────────────────────────────────────────────────────┤
-│  • Laravel 12 Application (Server-side Encryption)      │
-│  • MySQL 8 Database (Hardened Credentials)              │
-└────────────────────────────┬────────────────────────────┘
-                             │ (Logs & Metrics Shipping)
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│                Centralized Monitoring Stack             │
-├─────────────────────────────────────────────────────────┤
-│  • Log Aggregation: Promtail ➔ Loki                     │
-│  • Visualization: Grafana Dashboards                    │
-│  • Intrusion Prevention: Fail2Ban                       │
-│  • Container Runtime Security: Falco                    │
-│  • Host Hardening Checks: Lynis & RKHunter              │
-└─────────────────────────────────────────────────────────┘
-
+┌────────────┐
+│   Browser  │
+└─────┬──────┘
+      │
+      ▼
+┌────────────┐
+│ Cloudflare │
+│ DDoS / SSL │
+└─────┬──────┘
+      │
+      ▼
+┌────────────┐
+│   Nginx    │
+│ ModSecurity│
+│ OWASP CRS  │
+└─────┬──────┘
+      │
+      ▼
+┌─────────────────────────────┐
+│        Docker Stack         │
+├─────────────────────────────┤
+│ Laravel Application         │
+│ MySQL Database              │
+│ Server-side Encryption      │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│      Monitoring Stack       │
+├─────────────────────────────┤
+│ Grafana                     │
+│ Loki                        │
+│ Promtail                    │
+│ Fail2Ban                    │
+│ Falco                       │
+│ Lynis                       │
+│ RKHunter                    │
+│ Email Alerts                │
+└─────────────────────────────┘
 ```
 
 ---
 
-## 🚀 Core Features
+# 🚀 Core Features
 
-### 🔐 Authentication & Account Protection
+## 🔐 Authentication & Account Protection
 
-* **Multi-Factor Authentication:** Google Authenticator (TOTP) 2FA integration aur Email OTP verification.
-* **Brute-Force Mitigation:** Automated login attempt monitoring aur reCAPTCHA integration.
-* **Session Security:** Session regeneration immediately after login aur secure session cleanup on logout.
-* **Password Protections:** Advanced password reset flows, expiration validations, aur strict OTP validation.
-
-### 🔑 Password Security & Hashing
-
-* **Argon2id Hashing:** Industry-standard password hashing algorithm ka use.
-* **Password Peppering:** Database breach hone par bhi plain text passwords ko protect karne ke liye static secret (pepper) application level par enforced hai.
-* **Strict Password Policy:** Uppercase, lowercase, numeric, aur special characters ki mandatory requirements ke sath weak/common password blacklist validation.
-
-### 🔒 Data Protection & Cryptography
-
-* **Multi-Layer Encryption:** Application layer par Laravel encryption utilities ka use karke User Note titles, descriptions, aur 2FA secrets ko database mein encrypted store kiya jata hai.
-* **Data Masking:** Hidden sensitive model attributes taaki application logs ya API responses mein core secrets leak na ho.
-
-### 🧠 Runtime Security & Observability
-
-* **Audit Logging:** Har critical security event (Successful/Failed Logins, CAPTCHA triggers, Note creations, updates, deletions) ko user ID, IP address, aur User Agent ke sath custom channels par log kiya jata hai.
-* **Real Attack Visibility:** ModSecurity aur Nginx ke throug automated bot scanning, `.git/HEAD` probing, aur RCE payload execution attempts ki real-time tracking.
-
-### 🛡️ Web Security Controls
-
-* **Exploit Mitigation:** Custom middleware implementation for Content Security Policy (CSP), HTTP Strict Transport Security (HSTS), X-Frame-Options (Anti-Clickjacking), aur X-Content-Type-Options.
-* **Data Sanitization:** Strict input validation, PDO prepared statements for SQLi prevention, aur Laravel Blade XSS escaping engines.
+* Secure user registration
+* Secure login system
+* Forgot password functionality
+* Email OTP verification
+* Google Authenticator (TOTP) 2FA
+* Session regeneration after login
+* Secure logout session cleanup
+* Brute-force mitigation using reCAPTCHA
+* Login attempt monitoring
+* Password reset protection
+* OTP expiration & validation
 
 ---
 
-## ☁️ Infrastructure & Server Hardening
+## 🔑 Password Security
 
-* **Host Platform:** Microsoft Azure Virtual Machine running Ubuntu 24.04 LTS.
-* **Network Firewalls:** Dual layer packet filtering using Azure Network Security Groups (NSG) and Linux UFW.
-* **SSH Hardening:** Standard SSH port changed, password authentication disabled, exclusively SSH key-based access permitted.
-* **Intrusion Detection (IDS/IPS):**
-* **Fail2Ban:** Misbehaving IPs checking and auto-banning for SSH and web abuse.
-* **Falco:** System call logs monitoring inside containers for privilege escalation or abnormal activities.
-* **Lynis & RKHunter:** Automatic cron-scheduled rootkit checking and kernel hardening health audits.
+Implemented password security protections include:
 
-
-
----
-
-## ⚙️ CI/CD & DevSecOps Automation
-
-VaultScribe repository har code push/pull request par ek deep static aur dynamic analysis pipeline execute karta hai via **GitHub Actions**:
-
-```text
-[Code Push] ➔ [Laravel Tests] ➔ [Snyk/Trivy Scans] ➔ [CodeQL SAST] ➔ [Gitleaks] ➔ [Deploy to Azure]
-
-```
-
-* **Static Application Security Testing (SAST):** GitHub CodeQL integration for taint analysis.
-* **Secret Scanning:** Gitleaks pre-commit/pipeline testing to catch exposed API tokens.
-* **Container Security:** Trivy container vulnerability checks on the base images.
-* **Dependency Auditing:** Snyk testing for out-of-date PHP/Node packages with known vulnerabilities.
-* **Software Bill of Materials:** Automated SBOM generation for software supply-chain tracking.
+* Argon2id password hashing
+* Password peppering
+* Weak/common password blacklist validation
+* Uppercase requirement
+* Lowercase requirement
+* Numeric requirement
+* Special character enforcement
+* Minimum password length validation
+* Secure password reset workflows
 
 ---
 
-## 🛠️ Technology Stack
+## 🔒 Data Protection
 
-| Component | Technology | Usage |
-| --- | --- | --- |
-| **Backend** | PHP 8.3 & Laravel 12 | Core MVC application architecture |
-| **Database** | MySQL 8 | Relational data persistence layer |
-| **Web Server** | Nginx | Reverse proxying & TLS termination |
-| **WAF** | ModSecurity + OWASP CRS | Real-time payload inspection & filter |
-| **Containerization** | Docker & Docker Compose | Service isolation and orchestration |
-| **Cloud Provider** | Microsoft Azure VM | Infrastructure host deployment |
-| **CI/CD** | GitHub Actions | Automated build, test & security scan |
-| **Log Management** | Promtail & Loki | Log collection and high-speed aggregation |
-| **Metrics Engine** | Grafana | Security insight dashboards visualization |
-| **Intrusion Prevention** | Fail2Ban & Falco | Server & Container runtime threat detection |
-| **Host Auditing** | Lynis & RKHunter | Linux security benchmark scans |
-| **Scanners** | Snyk, CodeQL, Gitleaks, Trivy | DevSecOps security scanning matrix |
+VaultScribe protects sensitive application data using Laravel encryption mechanisms.
+
+### Protected data includes:
+
+* Note titles
+* Note descriptions
+* 2FA secrets
+* Authentication-sensitive values
+
+Additional protections include:
+
+* Hidden sensitive model attributes
+* Secure session handling
+* Expiring OTP verification system
+* Hashed OTP storage
 
 ---
 
-## ⚙️ Local Development Setup
+## 🧠 Runtime Security & Monitoring
 
-### 📋 Prerequisites
+VaultScribe includes runtime activity monitoring for improved attack visibility.
 
-Ensure you have the following installed on your machine:
+### Logged security events:
+
+* Successful logins
+* Failed login attempts
+* CAPTCHA triggers
+* Password reset failures
+* Password reset success events
+* Suspicious authentication activity
+* Note creation
+* Note updates
+* Note deletion
+* Logout activity
+
+Each event records:
+
+* User ID
+* IP address
+* User agent
+* Action type
+
+---
+
+# 🛡️ Web Security Protections
+
+VaultScribe implements protection against:
+
+* SQL Injection (SQLi)
+* Cross-Site Scripting (XSS)
+* CSRF attacks
+* Clickjacking
+* MIME sniffing attacks
+* Information disclosure
+
+### Security controls implemented:
+
+* Content Security Policy (CSP)
+* HTTP Strict Transport Security (HSTS)
+* X-Frame-Options
+* X-Content-Type-Options
+* Referrer-Policy
+* Permissions-Policy
+* Cross-Origin-Opener-Policy
+* Cross-Origin-Resource-Policy
+* Input validation
+* Prepared statements
+* Blade escaping
+* CSRF middleware
+* Sanitized production error messages
+
+---
+
+# 🧱 Access Control & Authorization
+
+Security restrictions include:
+
+* Authenticated route protection
+* Session-based 2FA enforcement
+* Protected dashboard access
+* Ownership validation for notes
+* Secure route segregation
+* Unauthorized route blocking
+
+A user can only access and manage their own notes.
+
+---
+
+# 🧱 Web Application Firewall (WAF)
+
+## ModSecurity + OWASP CRS
+
+VaultScribe integrates ModSecurity with Nginx using the OWASP Core Rule Set (CRS).
+
+### Protection includes:
+
+* SQL Injection detection
+* XSS payload blocking
+* Malicious request filtering
+* Remote code execution payload detection
+* Automated exploit blocking
+* Request inspection & filtering
+
+The monitoring stack captures real attack traffic and blocked exploit attempts.
+
+---
+
+# ☁️ Infrastructure & Deployment
+
+Infrastructure stack includes:
+
+* Microsoft Azure Virtual Machine
+* Ubuntu 24.04 LTS
+* Docker containerized deployment
+* Nginx reverse proxy
+* Cloudflare edge protection
+* GitHub Actions CI/CD
+* MySQL Docker container
+
+---
+
+# 🐳 Containerized Deployment
+
+Docker is used for:
+
+* Laravel application deployment
+* MySQL database container
+* Monitoring stack services
+* Infrastructure isolation
+
+### Containerized services:
+
+* Laravel Application
+* MySQL
+* Grafana
+* Loki
+* Promtail
+
+---
+
+# 🔥 Firewall & SSH Hardening
+
+## UFW Firewall
+
+Configured for:
+
+* HTTP/HTTPS filtering
+* Restricted inbound access
+* Firewall logging
+* Controlled exposed services
+
+---
+
+## Azure NSG
+
+Azure Network Security Groups configured for:
+
+* Restricted network exposure
+* Port-based filtering
+* Cloud-level traffic control
+
+---
+
+## SSH Hardening
+
+Server SSH protections include:
+
+* Password authentication disabled
+* SSH key-based authentication only
+* Custom SSH port configuration
+* Reduced brute-force attack surface
+
+---
+
+# 🚨 Intrusion Detection & Runtime Security
+
+## Fail2Ban
+
+Automatic banning for:
+
+* SSH brute-force attempts
+* Suspicious repeated requests
+* Repeated malicious authentication attempts
+
+---
+
+## Falco
+
+Runtime monitoring for:
+
+* Suspicious container activity
+* Linux runtime events
+* Security anomaly detection
+* Real-time threat monitoring
+
+---
+
+## RKHunter
+
+Used for:
+
+* Rootkit detection
+* Integrity verification
+* Host-level security scanning
+
+---
+
+## Lynis
+
+Linux security auditing configured using scheduled cron jobs.
+
+Used for:
+
+* Automated security auditing
+* Linux hardening checks
+* Recurring security assessments
+
+---
+
+# 📊 Monitoring, Logging & Observability
+
+Centralized monitoring stack includes:
+
+* Grafana dashboards
+* Loki log aggregation
+* Promtail log shipping
+* Laravel log monitoring
+* Nginx request monitoring
+* UFW firewall monitoring
+* Fail2Ban monitoring
+* Runtime security event monitoring
+
+---
+
+# 📈 Monitoring Dashboards
+
+Grafana dashboards include:
+
+* Attack Activity
+* Security Alerts
+* Email Alerts
+* Fail2Ban Active Bans
+* Laravel Logs
+* Nginx Request Activity
+* SSH Brute Force Attempts
+* Top Attacking IPs
+* UFW Firewall Logs
+* Falco Runtime Events
+* Lynis Security Audits
+* RKHunter Security Events
+
+---
+
+# 📧 Alerting System
+
+Integrated alerting includes:
+
+* Email security alerts
+* Runtime security alerts
+* Authentication attack alerts
+* Firewall event notifications
+* Attack activity alerts
+
+Telegram alerting was previously tested during development.
+
+---
+
+# 🔍 Real Attack Visibility
+
+Monitoring stack captures real-world attack attempts including:
+
+* `.git/HEAD` probing
+* PHPUnit exploit attempts
+* Remote code execution payloads
+* Automated exploit scanning
+* Bot reconnaissance traffic
+
+This provides visibility into hostile internet traffic targeting the server.
+
+---
+
+# ⚙️ CI/CD & DevSecOps Pipeline
+
+GitHub Actions pipeline includes:
+
+* Automated Laravel testing
+* MySQL CI environment
+* Docker image build
+* Trivy container scanning
+* Snyk vulnerability scanning
+* GitHub CodeQL analysis
+* Gitleaks secret scanning
+* SBOM generation
+* Deployment health checks
+* Rollback workflow support
+
+---
+
+# 🔄 Automation & Maintenance
+
+Automated cron jobs are used for:
+
+* Lynis audits
+* Security checks
+* Monitoring tasks
+* Scheduled maintenance
+* Log cleanup
+
+---
+
+# 📦 Log Management & Rotation
+
+Linux log rotation configured for:
+
+* Nginx access logs
+* Nginx error logs
+* Laravel logs
+* UFW logs
+* Fail2Ban logs
+* Authentication logs
+
+### Benefits:
+
+* Reduced disk usage
+* Stable monitoring pipelines
+* Long-term log retention
+* Continuous observability support
+
+---
+
+# 🛠️ Technology Stack
+
+| Technology         | Usage                    |
+| ------------------ | ------------------------ |
+| PHP 8.3            | Backend                  |
+| Laravel 12         | Framework                |
+| MySQL 8            | Database                 |
+| Docker             | Containerization         |
+| Nginx              | Reverse Proxy            |
+| GitHub Actions     | CI/CD                    |
+| Trivy              | Container Scanning       |
+| Microsoft Azure VM | Cloud Hosting            |
+| Ubuntu 24.04       | Server OS                |
+| Cloudflare         | Edge Security            |
+| Grafana            | Monitoring Dashboard     |
+| Loki               | Log Aggregation          |
+| Promtail           | Log Collection           |
+| Falco              | Runtime Security         |
+| Fail2Ban           | Intrusion Prevention     |
+| Lynis              | Security Auditing        |
+| RKHunter           | Rootkit Detection        |
+| ModSecurity        | Web Application Firewall |
+| OWASP CRS          | WAF Rule Set             |
+| UFW                | Linux Firewall           |
+| Azure NSG          | Cloud Network Filtering  |
+| Snyk               | Vulnerability Scanning   |
+| CodeQL             | Static Security Analysis |
+| Gitleaks           | Secret Detection         |
+
+---
+
+# 🧪 Security Philosophy
+
+VaultScribe follows a **Defense-in-Depth** security model using multiple security layers including:
+
+* Cloudflare edge filtering
+* Azure NSG filtering
+* UFW firewall rules
+* Nginx hardening
+* ModSecurity WAF
+* OWASP CRS rules
+* Fail2Ban intrusion prevention
+* Falco runtime monitoring
+* Secure Laravel middleware
+* Centralized monitoring & alerting
+
+---
+
+# ⚙️ Local Development Setup
+
+## 📋 Prerequisites
+
+Make sure the following are installed:
 
 * PHP 8.3+
 * Composer
+* MySQL 8+
 * Node.js & NPM
 * Docker & Docker Compose
-* MySQL 8 (If running natively without Docker)
+* Git
 
-### 📥 Installation Steps
+---
 
-1. **Clone the Repository:**
+# 📥 Installation
+
 ```bash
+# Clone repository
 git clone https://github.com/your-username/vaultscribe.git
+
+# Enter project directory
 cd vaultscribe
 
-```
-
-
-2. **Install Composer Dependencies:**
-```bash
+# Install dependencies
 composer install
 
-```
-
-
-3. **Environment Configuration:**
-```bash
+# Copy environment file
 cp .env.example .env
 
-```
-
-
-*(Note: Configure your database, encryption pepper, and security keys inside `.env`)*
-4. **Generate Application Cryptographic Key:**
-```bash
+# Generate application key
 php artisan key:generate
 
-```
+# Run database migrations
+php artisan migrate
 
-
-5. **Run Migrations & Seeders:**
-```bash
-php artisan migrate --seed
-
-```
-
-
-6. **Install and Build Frontend Assets:**
-```bash
+# Install frontend dependencies
 npm install
-npm run build
 
+# Build frontend assets
+npm run build
 ```
 
+---
 
+# ▶️ Running the Application
 
-### ▶️ Running the Application
+## Laravel Development Server
 
-* **Using Native Laravel Server:**
 ```bash
 php artisan serve
-
 ```
 
+---
 
-* **Using Docker Architecture:**
+## Docker Deployment
+
 ```bash
 docker compose up -d --build
-
 ```
 
+---
 
+# 🧪 Development Workflow
+
+1. Local development using Laravel Herd
+2. Local testing & validation
+3. Push changes to GitHub
+4. CI/CD pipeline execution
+5. Docker image build
+6. Security scanning
+7. Deployment to Azure VM
+8. Monitoring & runtime analysis
 
 ---
 
-## 📸 Dashboards & Screenshots
+# 📸 Screenshots
 
-> *Tip: Replace these placeholders with actual screenshots from your project root folder.*
+```md
+Add screenshots here:
 
-#### User Dashboard & Encryption Layer
-
-#### Grafana Attack Visibility Matrix
-
-#### Falco Security Runtime Alerts
+- Login Page
+- Dashboard
+- Grafana Monitoring
+- Attack Monitoring
+- Falco Alerts
+- Notes Management
+```
 
 ---
 
-## 🤝 Contributing
+# 🤝 Contributing
 
-Pull requests, feature expansions, and security vulnerability reports are welcome. If you find an edge case or want to extend the WAF/Security definitions, please open an issue or fork the repo.
+Pull requests and security improvements are welcome.
 
-## 📄 License
+If you discover vulnerabilities or want to improve the security architecture, contributions are appreciated.
 
-This project is open-source software licensed under the **[MIT License](https://www.google.com/search?q=LICENSE)**.
+---
 
-## 👨‍💻 Author
+# 📄 License
+
+Licensed under the MIT License.
+
+---
+
+# 👨‍💻 Author
 
 **Deep Karmakar**
-
-* Application Security • Cloud Security • DevSecOps
-* [GitHub Profile](https://www.google.com/search?q=https://github.com/your-username)
-* [LinkedIn Profile](https://linkedin.com/in/your-profile)
+Application Security • Cloud Security • DevSecOps
 
 ---
 
-> 📌 **Disclaimer:** VaultScribe is a learning-focused defensive engineering project built primarily for research, education, and portfolio showcase. Use it responsibly.
+# 📌 Disclaimer
 
-```
+VaultScribe is a learning-focused security engineering project built for educational and portfolio purposes to explore secure application design and defensive security practices.
 
-```
