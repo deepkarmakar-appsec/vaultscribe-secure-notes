@@ -562,9 +562,8 @@ docker compose up -d --build
 8. Monitoring & runtime analysis
 
 ---
-**Isko replace karna hai yeh se:**
 
-```markdown
+
 # 📸 Screenshots
 
 ### 🛡️ WAF Blocking Path Traversal (/etc/passwd)
