@@ -330,62 +330,77 @@ public function importUrl(Request $request)
         
         $content = substr($content, 0, 2500);
 
-        $apiKey = env('GEMINI_API_KEY');
+        $apiKey = config('services.openrouter.key');
+        if (!empty($apiKey)) {
 
-if (!empty($apiKey)) {
-
-    try {
-
-        $aiResponse = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'x-goog-api-key' => $apiKey
-        ])->post(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',
-            [
-                'contents' => [[
-                    'parts' => [[
-                        'text' => "
-Extract only the main article.
-
-Remove:
-- CSS
-- JavaScript
-- Menus
-- Navigation
-- Login buttons
-- Sidebars
-- Footer
-
-Create a clean note under 500 words.
-
-$content
-"
-                    ]]
-                ]]
-            ]
-        );
-
-        $cleanContent = $aiResponse->json('candidates.0.content.parts.0.text');
-
-        if (!empty($cleanContent)) {
-            $content = $cleanContent;
+            try {
+        
+                $aiResponse = Http::withHeaders([
+                    'Authorization' => 'Bearer '.$apiKey,
+                    'HTTP-Referer'  => 'http://localhost',
+                    'X-Title'       => 'VaultScribe',
+                ])
+                ->retry(3, 500)
+                ->timeout(60)
+                ->post('https://openrouter.ai/api/v1/chat/completions', [
+                    'model' => 'openai/gpt-oss-120b:free',
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => "
+        Extract only the main article.
+        
+        Remove:
+        - CSS
+        - JavaScript
+        - Menus
+        - Navigation
+        - Login buttons
+        - Sidebars
+        - Footer
+        
+        Create a clean note under 500 words.
+        
+        $content
+        "
+                        ]
+                    ],
+                    'reasoning_effort' => 'medium'
+                ]);
+        
+                if ($aiResponse->successful()) {
+        
+                    $cleanContent = $aiResponse->json('choices.0.message.content');
+        
+                    if (!empty($cleanContent)) {
+                        $content = trim($cleanContent);
+                    }
+        
+                } else {
+        
+                    \Log::error('OpenRouter Error: '.$aiResponse->status());
+                    \Log::error($aiResponse->body());
+        
+                }
+        
+            } catch (\Exception $e) {
+        
+                \Log::error($e->getMessage());
+        
+            }
         }
-
-    } catch (\Exception $e) {
-        // fallback to original content
-    }
-}
         
         return response()->json([
-            'title' => $title,
+            'title'   => $title,
             'content' => $content
         ]);
-
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'An error occurred while connecting to the URL. ' . $e->getMessage()], 500);
+        
+        } catch (\Exception $e) {
+        
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+        
+        }
     }
-
-
-
-}
-}

@@ -41,9 +41,20 @@
             --sidebar-w:  240px;
             --header-h:   60px;
         }
+        html, body {
+    height: auto;
+    min-height: 100%;
+}
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--gray-900); height: 100vh; overflow: hidden; display: flex; }
-
+        body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--gray-900);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+}
         /* ─── SIDEBAR ─── */
         .sidebar { width: var(--sidebar-w); background: var(--sidebar); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; position: relative; z-index: 10; }
         .sidebar-logo { height: var(--header-h); display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid var(--s-border); }
@@ -63,8 +74,13 @@
         .sidebar-bottom { padding: 10px; border-top: 1px solid var(--s-border); }
 
         /* ─── MAIN ─── */
-        .main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
+        .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    overflow-y: auto;
+}
         /* ─── TOPBAR ─── */
         .topbar { height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; gap: 14px; padding: 0 24px; flex-shrink: 0; }
         .page-heading { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 17px; color: var(--gray-900); }
@@ -77,8 +93,13 @@
         .user-name { font-size: 13px; font-weight: 500; color: var(--gray-700); }
 
         /* ─── CONTENT ─── */
-        .content { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; align-items: center; }
-
+        .content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 24px;
+    padding-bottom: 120px;
+}
         /* ─── UPLOAD CARD ─── */
         .card { width: 100%; max-width: 650px; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; animation: fadeUp 0.4s both; margin-top: 20px; }
         .card-head { padding: 18px 20px 16px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 8px; }
@@ -125,6 +146,39 @@
             from { opacity: 0; transform: translateY(15px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+
+
+        /* मोबाइल के लिए बटन और लेआउट */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--gray-700);
+    padding: 5px;
+    margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    
+    .sidebar {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 1001;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    .sidebar.mobile-open { display: flex; }
+
+    /* कार्ड को मोबाइल पर थोड़ा बेहतर करने के लिए */
+    .card { margin-top: 10px; width: 95%; }
+    .upload-stats { flex-direction: column; }
+}
     </style>
 </head>
 <body>
@@ -181,21 +235,26 @@
 </aside>
 
 <main class="main">
-    <header class="topbar">
-        <span class="page-heading">Secure File Upload</span>
-        <div class="topbar-right">
-            <div class="user-btn" onclick="window.location.href='{{ route('dashboard') }}'">
-                <div class="avatar-wrap">
-                    @if(auth()->user()->profile_photo)
-                        <img src="{{ route('profile.photo', ['filename' => auth()->user()->profile_photo]) }}" alt="Avatar">
-                    @else
-                        {{ substr(auth()->user()->name, 0, 2) }}
-                    @endif
-                </div>
-                <span class="user-name">{{ auth()->user()->name }}</span>
+<header class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    
+    <span class="page-heading">Dashboard</span>
+    
+    <div class="topbar-right">
+        <div class="user-btn" onclick="window.location.href='{{ route('upload') }}'">
+            <div class="avatar-wrap">
+                @if(auth()->user()->profile_photo)
+                    <img src="{{ route('profile.photo', ['filename' => auth()->user()->profile_photo]) }}" alt="Avatar">
+                @else
+                    {{ substr(auth()->user()->name, 0, 2) }}
+                @endif
             </div>
+            <span class="user-name">{{ auth()->user()->name }}</span>
         </div>
-    </header>
+    </div>
+</header>
 
     <div class="content">
         <div class="card">
@@ -376,6 +435,25 @@
         statReady.style.color = 'var(--gray-400)';
         uploadBtn.disabled = true;
     }
+
+    function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('mobile-open');
+}
+
+// बाहर क्लिक करने पर साइडबार बंद करने के लिए (Mobile)
+document.addEventListener('click', (e) => {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.querySelector('.menu-toggle');
+    
+    if (window.innerWidth <= 768 && 
+        sidebar.classList.contains('mobile-open') && 
+        !sidebar.contains(e.target) && 
+        !toggleBtn.contains(e.target)) {
+        
+        sidebar.classList.remove('mobile-open');
+    }
+});
 </script>
 </body>
 </html>

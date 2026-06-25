@@ -45,7 +45,37 @@
         .mbtn-pri { background: var(--blue); color: #fff; }
         
         .error-box { background: var(--red-l); border: 1px solid #fecaca; color: var(--red); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; }
-    </style>
+/* --- Desktop Default (Keep your existing styles for > 768px) --- */
+
+/* --- Responsive Breakpoint for Mobile --- */
+@media (max-width: 768px) {
+    /* 1. Hide the sidebar on small screens to save space */
+    .sidebar {
+        display: none; 
+    }
+
+    /* 2. Adjust Main Container */
+    .main {
+        width: 100%;
+    }
+
+    /* 3. Make the card fluid */
+    .card {
+        width: 95%; /* Use percentage for better mobile fit */
+        margin: 0 auto;
+        max-width: none; /* Remove the 700px restriction */
+    }
+
+    /* 4. Tweak padding for smaller touch targets */
+    .card-body {
+        padding: 16px;
+    }
+
+    .topbar {
+        padding: 0 16px;
+    }
+}
+</style>
 </head>
 <body>
 

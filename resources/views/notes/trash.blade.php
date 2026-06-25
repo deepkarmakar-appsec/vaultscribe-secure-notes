@@ -45,6 +45,41 @@
         /* ─── TOAST NOTIFICATION ─── */
         .toast { position: fixed; bottom: 24px; right: 24px; z-index: 2000; background: var(--gray-900); color: #fff; font-size: 13px; font-weight: 500; padding: 12px 20px; border-radius: 9px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: translateY(20px); opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; display: flex; align-items: center; gap: 8px; }
         .toast.show { transform: translateY(0); opacity: 1; }
+    
+    /* --- Mobile Responsive Additions --- */
+.menu-toggle {
+    display: none; /* Hidden on desktop */
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--gray-700);
+    padding: 5px;
+    margin-right: 15px;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    
+    .sidebar {
+        display: none; /* Hidden on mobile */
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 1001;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+    
+    .sidebar.mobile-open { display: flex; }
+
+    /* Stack the Restore/Delete buttons on mobile */
+    .content > div:last-child {
+        flex-direction: column;
+        width: 100%;
+    }
+    .mbtn { width: 100%; }
+}
     </style>
 </head>
 <body>
@@ -87,25 +122,26 @@
 
 <main class="main">
 
-    <header class="topbar">
-        <span class="page-heading">Trash</span>
-
-        <div class="topbar-right">
-            <div class="user-btn">
-                <div class="avatar-wrap">
-                    @if(auth()->user()->profile_photo)
-                        <img src="{{ route('profile.photo', ['filename' => auth()->user()->profile_photo]) }}">
-                    @else
-                        {{ substr(auth()->user()->name,0,2) }}
-                    @endif
-                </div>
-
-                <span class="user-name">
-                    {{ auth()->user()->name }}
-                </span>
+<header class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    
+    <span class="page-heading">Dashboard</span>
+    
+    <div class="topbar-right">
+        <div class="user-btn" onclick="window.location.href='{{ route('upload') }}'">
+            <div class="avatar-wrap">
+                @if(auth()->user()->profile_photo)
+                    <img src="{{ route('profile.photo', ['filename' => auth()->user()->profile_photo]) }}" alt="Avatar">
+                @else
+                    {{ substr(auth()->user()->name, 0, 2) }}
+                @endif
             </div>
+            <span class="user-name">{{ auth()->user()->name }}</span>
         </div>
-    </header>
+    </div>
+</header>
 
     <div class="content">
 
@@ -269,6 +305,25 @@ function executeDelete() {
 document.addEventListener('keydown', e => { 
     if (e.key === 'Escape') {
         document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+    }
+});
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('mobile-open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', (e) => {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.querySelector('.menu-toggle');
+    
+    if (window.innerWidth <= 768 && 
+        sidebar.classList.contains('mobile-open') && 
+        !sidebar.contains(e.target) && 
+        !toggleBtn.contains(e.target)) {
+        
+        sidebar.classList.remove('mobile-open');
     }
 });
 </script>

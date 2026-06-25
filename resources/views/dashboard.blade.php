@@ -45,7 +45,14 @@
             --header-h:   60px;
         }
 
+        html, body {
+    height: auto;
+    min-height: 100%;
+}
+
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--gray-900); height: 100vh; overflow: hidden; display: flex; }
+
+       
 
         /* ─── SIDEBAR ─── */
         .sidebar { width: var(--sidebar-w); background: var(--sidebar); display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; position: relative; z-index: 10; }
@@ -243,6 +250,37 @@
     white-space:pre-wrap;
     color:#374151;
 }
+/* Sidebar toggle button (hidden on desktop) */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--gray-700);
+    padding: 5px;
+}
+
+@media (max-width: 768px) {
+    /* Show the hamburger menu */
+    .menu-toggle { display: block; }
+    
+    /* Hide sidebar by default on mobile */
+    .sidebar {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 1001; /* Above everything */
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Class added by JS to show sidebar */
+    .sidebar.mobile-open {
+        display: flex;
+    }
+}
     </style>
 </head>
 <body>
@@ -313,21 +351,26 @@
 </aside>
 
 <main class="main">
-    <header class="topbar">
-        <span class="page-heading">Dashboard</span>
-        <div class="topbar-right">
-            <div class="user-btn" onclick="window.location.href='{{ route('upload') }}'">
-                <div class="avatar-wrap">
-                    @if(auth()->user()->profile_photo)
-                        <img src="{{ route('profile.photo', ['filename' => auth()->user()->profile_photo]) }}" alt="Avatar">
-                    @else
-                        {{ substr(auth()->user()->name, 0, 2) }}
-                    @endif
-                </div>
-                <span class="user-name">{{ auth()->user()->name }}</span>
+<header class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    
+    <span class="page-heading">Dashboard</span>
+    
+    <div class="topbar-right">
+        <div class="user-btn" onclick="window.location.href='{{ route('upload') }}'">
+            <div class="avatar-wrap">
+                @if(auth()->user()->profile_photo)
+                    <img src="{{ route('profile.photo', ['filename' => auth()->user()->profile_photo]) }}" alt="Avatar">
+                @else
+                    {{ substr(auth()->user()->name, 0, 2) }}
+                @endif
             </div>
+            <span class="user-name">{{ auth()->user()->name }}</span>
         </div>
-    </header>
+    </div>
+</header>
 
     <div class="content">
 
@@ -627,6 +670,21 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(tick);
     });
 });
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    // अगर साइडबार छिपा है तो उसे दिखाएं, वरना छुपा दें
+    if (sidebar.style.display === 'flex') {
+        sidebar.style.display = 'none';
+    } else {
+        sidebar.style.display = 'flex';
+        sidebar.style.position = 'fixed'; // ताकि वो कंटेंट के ऊपर आए
+        sidebar.style.top = '0';
+        sidebar.style.left = '0';
+        sidebar.style.height = '100vh';
+        sidebar.style.zIndex = '1000';
+    }
+}
 </script>
 
 </body>

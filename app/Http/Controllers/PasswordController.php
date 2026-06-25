@@ -13,169 +13,58 @@ use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Cache;
 
 
-
 class PasswordController extends Controller
 {
-
-
-    public function forget()
-    {
-        return view('forgetpassword');
-    }
-
     public function forgetpass(Request $req)
     {
-        $attempts = session()->get('forgot_attempts', 0);
-    
-        $req->validate([
-            'email' => 'required|email'
-        ]);
-    
-        // CAPTCHA after 3 attempts
-        if ($attempts >= 3) {
-            if (!$req->filled('g-recaptcha-response')) {
-                return back()->withErrors(['email' => 'Captcha required']);
-            }
-    
-            $response = Http::asForm()->post(
-                'https://www.google.com/recaptcha/api/siteverify',
-                [
-                    'secret' => env('NOCAPTCHA_SECRET'),
-                    'response' => $req->input('g-recaptcha-response'),
-                    'remoteip' => $req->ip(),
-                ]
-            );
-    
-            if (!$response->json('success')) {
-                return back()->withErrors(['email' => 'Captcha failed']);
-            }
+        $req->validate(['email' => 'required|email']);
+        
+        // VULNERABILITY: Username Enumeration
+        // "If email exists" message batana band karo, directly batao ki account mila ya nahi.
+        $user = User::where('email', $req->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'invalid Credentials.']); 
         }
-    
+
         $status = Password::sendResetLink($req->only('email'));
-    
-        if ($status === Password::RESET_LINK_SENT) {
-            session()->forget('forgot_attempts');
-            return back()->with('status', 'Reset link sent');
-        }
-    
-        session()->put('forgot_attempts', $attempts + 1);
-        return back()->with('status', 'If email exists, reset link sent');
+        return back()->with('status', 'Reset link sent');
     }
 
-public function showResetForm(Request $req, $token)
-{
-    return view('passwordreset', [
-        'token' => $token,
-        'email' => $req->email
-    ]);
-}
-public function resetPassword(Request $request)
-{
-    $attempts = session()->get('reset_attempts', 0);
+    public function resetPassword(Request $request)
+    {
+        // VULNERABILITY 1: Insecure Token Validation
+        // Laravel's default Password::reset already validates the token,
+        // lekin agar hum isse bypass karke manually token check karein,
+        // toh "Token Replay" attack possible hai.
+        
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:10', // Removed regex for "vulnerability"
+        ]);
 
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|string|email|max:255|exists:users,email',
-        'password' => [
-            'required',
-            'confirmed',
-            'min:10',
-            'regex:/[A-Z]/',
-            'regex:/[a-z]/',
-            'regex:/[0-9]/',
-            'regex:/[@$!%*?&]/',
-        ],
-    ]);
-
-    // Weak password check
-    $passwordLower = strtolower($request->password);
-    $weakPasswords = Cache::remember('weak_passwords', 86400, function () {
-        $path = storage_path('app/weak_passwords.txt');
-        return is_readable($path) ? array_map('trim', file($path, FILE_IGNORE_NEW_LINES)) : [];
-    });
-
-    if (in_array($passwordLower, $weakPasswords)) {
-        return back()->withErrors(['password' => 'This password is too common.']);
-    }
-
-    // CAPTCHA
-    if ($attempts >= 3) {
-
-        if ($attempts == 3) {
-            ActivityLog::create([
-                'user_id' => null,
-                'action' => 'captcha_triggered',
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-            ]);
-        }
-
-        if (!$request->filled('g-recaptcha-response')) {
-            return back()->withErrors(['email' => 'Captcha required']);
-        }
-
-        $response = Http::asForm()->post(
-            'https://www.google.com/recaptcha/api/siteverify',
-            [
-                'secret' => env('NOCAPTCHA_SECRET'),
-                'response' => $request->input('g-recaptcha-response'),
-                'remoteip' => $request->ip(),
-            ]
+        // VULNERABILITY 2: Password Reset Token Leakage via URL
+        // showResetForm mein hum email ko URL parameter mein accept kar rahe hain.
+        // Ye "Reflected XSS" aur "Token Hijacking" ka risk badhata hai.
+        
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                // VULNERABILITY 3: Lack of Old Password Check
+                // User purana password phir se set kar sakta hai (No history check).
+                
+                $pepperedPassword = hash_hmac('sha256', $password, config('app.pepper'));
+                $user->update(['password' => Hash::make($pepperedPassword)]);
+            }
         );
 
-        if (!$response->json('success')) {
-            return back()->withErrors(['email' => 'Captcha failed']);
+        if ($status !== Password::PASSWORD_RESET) {
+            // VULNERABILITY 4: Verbose Error Messages
+            // Yahan hum exact reason de rahe hain kyun reset fail hua (e.g., Token Invalid)
+            // Attacker ko token validity check karne mein madad milti hai.
+            return back()->withErrors(['email' => 'Invalid Token or Expired']);
         }
+
+        return redirect()->route('login')->with('status', 'Success');
     }
-
-    // Reset
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-
-            $pepperedPassword = hash_hmac(
-                'sha256',
-                $password,
-                config('app.pepper') //  FIXED
-            );
-
-            $user->update([
-                'password' => Hash::make($pepperedPassword)
-            ]);
-        }
-    );
-
-    if ($status === Password::PASSWORD_RESET) {
-
-        session()->forget('reset_attempts');
-
-        $user = User::where('email', $request->email)->first();
-
-        ActivityLog::create([
-            'user_id' => $user->id,
-            'action' => 'password_reset_success',
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-        ]);
-
-        Mail::raw("Your password has been changed successfully.", function ($message) use ($user) {
-            $message->to($user->email)->subject('Password Changed Alert');
-        });
-
-        return redirect()->route('login')->with('status', 'Password reset successful');
-    }
-
-    session()->increment('reset_attempts');
-
-    ActivityLog::create([
-        'user_id' => null,
-        'action' => 'password_reset_failed',
-        'ip_address' => $request->ip(),
-        'user_agent' => $request->userAgent(),
-    ]);
-
-    return back()->withErrors(['email' => 'Invalid or expired link']);
-}
-
-  
 }
